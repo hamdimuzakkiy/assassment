@@ -4,7 +4,7 @@ var models = require('../models');
 var bodyParser = require('body-parser');
 
 // insert record
-router.post('/', function(req, res, next) {	
+router.post('/', function(req, res, next) {		
   	InsertItem(req.body,function(flag){
   		res.send(flag);
   	});
@@ -59,6 +59,7 @@ function UpdateItem(data,callback){
 }
 
 function InsertItem(data,callback){
+	console.log(data.categoryId);
 	models.items.create({
   		name : data.name,
   		price : data.price,
