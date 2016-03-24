@@ -14,8 +14,12 @@ module.exports = {
       price: {
         type: Sequelize.INTEGER
       },
-      category_id: {
+      categoryId: {
         type: Sequelize.INTEGER
+      },
+      deleted : {
+        type: Sequelize.BOOLEAN,
+        defaultValue : false
       },
       createdAt: {
         allowNull: false,

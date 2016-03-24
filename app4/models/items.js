@@ -3,13 +3,16 @@ module.exports = function(sequelize, DataTypes) {
   var items = sequelize.define('items', {
     name: DataTypes.STRING,
     price: DataTypes.INTEGER,
-    category_id: DataTypes.INTEGER
+    categoryId: DataTypes.INTEGER,
+    deleted : DataTypes.BOOLEAN,
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+        items.belongsTo(models.categorys,{
+
+        })
       }
     }
-  });  
+  });
   return items;
 };
