@@ -4,11 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var nodeCache = require('node-cache');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var items = require('./routes/items');
+var carts = require('./routes/carts');
 
+var caches = new nodeCache();
 var app = express();
 
 // view engine setup
@@ -26,12 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/items',items);
+app.use('/carts',carts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  res.send(false);
 });
 
 // error handlers
