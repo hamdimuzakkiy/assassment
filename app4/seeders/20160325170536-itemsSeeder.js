@@ -5,17 +5,17 @@ var chance = new Chance();
 
 module.exports = {
   up: function (queryInterface, Sequelize) {  
-    var reference = [];
-    models.categorys.findAll({      
-    }).then(function (result) {     
-        for (var i in result){          
-          reference.push(result[i]['dataValues']['id']);
-        }        
+    // var reference = [];
+    // models.categorys.findAll({      
+    // }).then(function (result) {     
+    //     for (var i in result){          
+    //       reference.push(result[i]['dataValues']['id']);
+    //     }        
         function generateItems(){
           var item = {
             name : chance.word(),
             price: chance.integer({min: 100000, max: 100000000}),
-            categoryId: reference[chance.integer({min:1,max:reference.length})],
+            categoryId: chance.integer({min:1,max:10}),
             createdAt: new Date(),
             updatedAt: new Date(),                            
           };
@@ -28,7 +28,7 @@ module.exports = {
         return queryInterface.bulkInsert('items',
         items    
         );
-    });        
+    // });        
   },
 
   down: function (queryInterface, Sequelize) {

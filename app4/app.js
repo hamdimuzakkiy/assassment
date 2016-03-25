@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var items = require('./routes/items');
 var carts = require('./routes/carts');
 var categorys = require('./routes/categorys');
+var coupons = require('./routes/coupons');
 var expressValidator = require('express-validator');
 
 var caches = new nodeCache();
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/items',items);
 app.use('/carts',carts);
 app.use('/categorys',categorys);
+app.use('/coupons',coupons);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
