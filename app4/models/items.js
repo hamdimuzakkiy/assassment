@@ -4,20 +4,17 @@ module.exports = function(sequelize, DataTypes) {
     name : {
       type : DataTypes.STRING,
       validate : {
-        notNull: true,      
       }
     },
     price : {
       type : DataTypes.INTEGER,
-      validate : {
-        notNull: true,
-        isInt: true, 
+      validate : {        
+        isInt: true,         
       }
     },
     categoryId: {
-      type : DataTypes.INTEGER,
-      validate : {
-        notNull: true,
+      type : DataTypes.INTEGER,      
+      validate : {        
         isInt: true, 
       } 
     },
@@ -25,11 +22,10 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        items.belongsTo(models.categorys,{
-
+        items.belongsTo(models.categorys,{                  
         })
       }
-    }
+    },    
   });
   return items;
 };

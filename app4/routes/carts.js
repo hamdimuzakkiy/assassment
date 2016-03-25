@@ -4,15 +4,17 @@ var nodeCache = require('node-cache');
 var caches = new nodeCache();
 var router = require('express-promise-router')();
 var models = require('../models');
+var expressValidator = require('express-validator')
 var globalTrue = 'success';
 var globalFalse = 'failed';
 var globalCache = "salestockCache";
+var Sequelize = require('sequelize');
 
 
 // set cache
 router.post('/', function(req, res, next) {
 	getCache(function(cacheObject){		
-		insertCache(cacheObject,req.body,function(status){
+		insertCache(cacheObject,req,function(status){
 			res.send(status);
 		})
 	});		
@@ -81,13 +83,21 @@ function calculateItems(cartDetail,callback){
 	callback(total.toString());
 }
 
+function getDiscount(code,callback){	
+	models.coupons.findAll({
+		where : Sequelize.and({isUsed : 0},{code:code}),		
+	}).then(function (result) {    	
+    	callback(result);
+	});
+}
+
 //function list of cart
 function getCartDetail(callback){
 	getCache(function(cacheObject){				
 		if (cacheObject == null){			
-			callback(null);		
+			callback({item:[],total:0,discount:0,totalPurchase:0});		
 			return;
-		}							
+		}		
 		getItems(cacheObject['item'],function(cartItem){
 			var listDistinct = new Map();					
 			for (var i in cacheObject['item']){				
@@ -101,10 +111,23 @@ function getCartDetail(callback){
 				var id = cartItem[i]['dataValues']['id'];
 				cartItem[i]['dataValues']['count'] = listDistinct.get(id.toString());				
 			}			
-			calculateItems(cartItem, function(totalPrice){			
-				var result = {item:cartItem,total:totalPrice};
-				callback(result);							
-			})				
+			getDiscount(cacheObject['coupon'],function(discountValue){				
+				calculateItems(cartItem, function(totalPrice){																		
+						if (discountValue[0] == null)
+							discountValue = 0;
+						else
+							discountValue = discountValue[0]['dataValues']['value']
+						var totalPurchase = parseInt(totalPrice) - parseInt(discountValue);
+						if (totalPurchase<0)
+							totalPurchase = 0;
+						var result = {item:cartItem
+							,total:parseInt(totalPrice)						
+							,discount:discountValue
+							,totalPurchase:totalPurchase
+						};
+						callback(result);													
+					})				
+			})			
 		})		
 	})	
 }
@@ -119,14 +142,30 @@ function setCache(cacheObject ,callback){
 	});
 }
 
+function checkInsert(data,callback){
+	data.checkBody('type' , false).isExist();
+	data.checkBody('id' , false).isExist();	
+	if (data.validationErrors()){
+		callback(false);
+		return;		
+	}
+	callback(true);
+}
+
 function insertCache(cacheObject, data ,callback){
-	if (cacheObject == null)
+	checkInsert(data,function(status){
+		if (!status){
+			callback(globalFalse);
+			return;
+		}
+		if (cacheObject == null)
 		cacheObject = {item:[],coupon:[]};		
-	if (data.type == 'coupon')
-		cacheObject[data.type] = data.id;	
-	else
-		cacheObject[data.type].push(data.id);
-	setCache(cacheObject,function(status){
-		callback(status);
-	})
+		if (data.body.type == 'coupon')
+			cacheObject[data.body.type] = data.body.id;	
+		else
+			cacheObject[data.body.type].push(data.body.id);
+		setCache(cacheObject,function(status){
+			callback(status);
+		})
+	})	
 }

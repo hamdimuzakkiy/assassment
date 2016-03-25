@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodeCache = require('node-cache');
-var Sequelize = require('sequelize');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var items = require('./routes/items');

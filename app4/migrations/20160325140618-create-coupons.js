@@ -1,28 +1,20 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('items', {
+    return queryInterface.createTable('coupons', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        allowNull: false,
+      code: {
         type: Sequelize.STRING
       },
-      price: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue : 0
+      value: {
+        type: Sequelize.INTEGER
       },
-      categoryId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: { model: 'categorys', key: 'id' }      
-      },
-      deleted : {
+      isUsed: {
         type: Sequelize.BOOLEAN,
         defaultValue : false
       },
@@ -37,6 +29,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('items');
+    return queryInterface.dropTable('coupons');
   }
 };

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var expressValidator = require('express-validator')
+var expressValidator = require('express-validator');
 var globalTrue = 'success';
 var globalFalse = 'failed';
 
@@ -61,15 +61,30 @@ function updateItem(data,callback){
 	})
 }
 
+function checkInsert(data,callback){
+	data.checkBody('name' , false).isExist();
+	data.checkBody('price' , false).isExist();
+	data.checkBody('categoryId' , false).isExist();
+	if (data.validationErrors()){
+		callback(false);
+		return;		
+	}
+	callback(true);		
+}
+
 function insertItem(data,callback){
-	checkInsert(data,function(status){		
+	checkInsert(data,function(status){
+		if (!status){
+			callback(globalFalse);
+			return;		
+		}
 		models.items.create({
   		name : data.body.name,
   		price : data.body.price,
   		categoryId : data.body.categoryId,
 	  	}).then(function(createdItem){  		
 	  		callback(globalTrue);
-	  	}).catch(function(err){	  		
+	  	}).catch(function(err){
 	  		callback(globalFalse);
 	  	}) 
 	})	
