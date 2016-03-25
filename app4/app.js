@@ -5,11 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var nodeCache = require('node-cache');
-
+var Sequelize = require('sequelize');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var items = require('./routes/items');
 var carts = require('./routes/carts');
+var expressValidator = require('express-validator');
+
 
 var caches = new nodeCache();
 var app = express();
@@ -22,6 +24,16 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
+app.use(expressValidator({
+  customValidators :{
+    isExist : function(value){
+      if (value == null)
+        return false;
+      else
+        return true;  
+    }
+  }
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

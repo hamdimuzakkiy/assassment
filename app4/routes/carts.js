@@ -3,11 +3,11 @@ var router = express.Router();
 var nodeCache = require('node-cache');
 var caches = new nodeCache();
 var router = require('express-promise-router')();
-var globalCache = "salestockCache";
 var models = require('../models');
-var Sequelize = require('sequelize');
 var globalTrue = 'success';
 var globalFalse = 'failed';
+var globalCache = "salestockCache";
+
 
 // set cache
 router.post('/', function(req, res, next) {
@@ -94,7 +94,8 @@ function getCartDetail(callback){
 				if (listDistinct.get(cacheObject['item'][i]) == null)
 					listDistinct.set(cacheObject['item'][i],1);
 				else
-					listDistinct.set(cacheObject['item'][i],listDistinct.get(cacheObject['item'][i])+1);
+					listDistinct.set(cacheObject['item'][i]
+					,listDistinct.get(cacheObject['item'][i])+1);
 			}			
 			for (var i in cartItem){
 				var id = cartItem[i]['dataValues']['id'];

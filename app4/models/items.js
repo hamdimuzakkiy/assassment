@@ -1,9 +1,26 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var items = sequelize.define('items', {
-    name: DataTypes.STRING,
-    price: DataTypes.INTEGER,
-    categoryId: DataTypes.INTEGER,
+    name : {
+      type : DataTypes.STRING,
+      validate : {
+        notNull: true,      
+      }
+    },
+    price : {
+      type : DataTypes.INTEGER,
+      validate : {
+        notNull: true,
+        isInt: true, 
+      }
+    },
+    categoryId: {
+      type : DataTypes.INTEGER,
+      validate : {
+        notNull: true,
+        isInt: true, 
+      } 
+    },
     deleted : DataTypes.BOOLEAN,
   }, {
     classMethods: {

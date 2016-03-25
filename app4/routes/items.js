@@ -1,26 +1,28 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var bodyParser = require('body-parser');
+var expressValidator = require('express-validator')
 var globalTrue = 'success';
 var globalFalse = 'failed';
+
+
 // insert record
-router.post('/', function(req, res, next) {		
-  	insertItem(req.body,function(flag){
+router.post('/', function(req, res, next) {	
+  	insertItem(req,function(flag){
   		res.send(flag);
   	});
 });
 
 // delete record
 router.delete('/', function(req, res, next) {
-	deleteItem(req.body,function(flag){
+	deleteItem(req,function(flag){
   		res.send(flag);
   	});	
 });
 
 // update record
 router.put('/', function(req, res, next) {	
-	updateItem(req.body,function(flag){
+	updateItem(req,function(flag){
   		res.send(flag);
   	});	
 });
@@ -45,12 +47,12 @@ function getItem(callback){
 
 function updateItem(data,callback){
 	models.items.update({
-		name : data.name,
-		price : data.price,
+		name : data.body.name,
+		price : data.body.price,
 		updatedAt : null,
 	},{
 		where : {
-			id : data.id,
+			id : data.body.id,
 		}
 	}).then(function(updated){
 		callback(globalTrue);
@@ -60,16 +62,17 @@ function updateItem(data,callback){
 }
 
 function insertItem(data,callback){
-	console.log(data.categoryId);
-	models.items.create({
-  		name : data.name,
-  		price : data.price,
-  		categoryId : data.categoryId,
-  	}).then(function(createdItem){  		
-  		callback(globalTrue);
-  	}).catch(function(err){
-  		callback(globalFalse);
-  	}) 
+	checkInsert(data,function(status){		
+		models.items.create({
+  		name : data.body.name,
+  		price : data.body.price,
+  		categoryId : data.body.categoryId,
+	  	}).then(function(createdItem){  		
+	  		callback(globalTrue);
+	  	}).catch(function(err){	  		
+	  		callback(globalFalse);
+	  	}) 
+	})	
 }
 
 function deleteItem(data,callback){
@@ -77,7 +80,7 @@ function deleteItem(data,callback){
 		deleted : true},
 	{
 		where : {
-			id : data.id,
+			id : data.body.id,
 		},
 	}
 	).then(function(updated){
