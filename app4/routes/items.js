@@ -2,38 +2,39 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 var bodyParser = require('body-parser');
-
+var globalTrue = 'success';
+var globalFalse = 'failed';
 // insert record
 router.post('/', function(req, res, next) {		
-  	InsertItem(req.body,function(flag){
+  	insertItem(req.body,function(flag){
   		res.send(flag);
   	});
 });
 
 // delete record
 router.delete('/', function(req, res, next) {
-	DeleteItem(req.body,function(flag){
+	deleteItem(req.body,function(flag){
   		res.send(flag);
   	});	
 });
 
 // update record
 router.put('/', function(req, res, next) {	
-	UpdateItem(req.body,function(flag){
+	updateItem(req.body,function(flag){
   		res.send(flag);
   	});	
 });
 
 // fetch record
 router.get('/', function(req, res, next) {	
-	GetItem(function(itemJson){
+	getItem(function(itemJson){
 		res.send(itemJson);
 	});
 });
 
 module.exports = router;
 
-function GetItem(callback){
+function getItem(callback){
 	models.items.findAll({
 		where : {deleted : false},
 		include: [ models.categorys ]
@@ -42,7 +43,7 @@ function GetItem(callback){
 	});
 }
 
-function UpdateItem(data,callback){
+function updateItem(data,callback){
 	models.items.update({
 		name : data.name,
 		price : data.price,
@@ -52,26 +53,26 @@ function UpdateItem(data,callback){
 			id : data.id,
 		}
 	}).then(function(updated){
-		callback(true);
+		callback(globalTrue);
 	}).catch(function(err){
-		callback(false);
+		callback(globalFalse);
 	})
 }
 
-function InsertItem(data,callback){
+function insertItem(data,callback){
 	console.log(data.categoryId);
 	models.items.create({
   		name : data.name,
   		price : data.price,
   		categoryId : data.categoryId,
   	}).then(function(createdItem){  		
-  		callback(true);
+  		callback(globalTrue);
   	}).catch(function(err){
-  		callback(false);
+  		callback(globalFalse);
   	}) 
 }
 
-function DeleteItem(data,callback){
+function deleteItem(data,callback){
 	models.items.update({ 
 		deleted : true},
 	{
@@ -80,8 +81,8 @@ function DeleteItem(data,callback){
 		},
 	}
 	).then(function(updated){
-		callback(true);
+		callback(globalTrue);
 	}).catch(function(err){
-		callback(false);
+		callback(globalFalse);
 	})	
 }

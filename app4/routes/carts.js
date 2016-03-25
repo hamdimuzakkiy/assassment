@@ -6,12 +6,14 @@ var router = require('express-promise-router')();
 var globalCache = "salestockCache";
 var models = require('../models');
 var Sequelize = require('sequelize');
+var globalTrue = 'success';
+var globalFalse = 'failed';
 
 // set cache
 router.post('/', function(req, res, next) {
 	getCache(function(cacheObject){		
-		setCache(cacheObject,req.body,function(result){
-			res.send(result);
+		insertCache(cacheObject,req.body,function(status){
+			res.send(status);
 		})
 	});		
 });
@@ -22,18 +24,41 @@ router.get('/', function(req, res, next){
 	})
 });
 
-router.delete('/', function(res,req, next){
-	
+router.delete('/', function(req, res, next){
+	deleteCart(req.body,function(status){
+		res.send(status);
+	})
 });
 
 module.exports = router;
+
+function deleteCart(data,callback){
+	getCache(function(cacheObject){
+		if (cacheObject == null){
+			callback(globalFalse);
+			return;
+		}
+		var index = null;
+		for(var i in cacheObject['item']){
+			if (cacheObject['item'][i] == data.id){
+				index = i;
+				break;
+			}
+		}		
+		if (index != null)		
+			cacheObject['item'].splice(index,1);
+		setCache(cacheObject,function(status){
+			callback(globalTrue);
+		})		
+	})
+}
 
 function getCache(callback){
 	caches.get(globalCache, function(err, cacheObject){
 		if (!err)
 			callback(cacheObject);
 		else
-			callback(false);
+			callback(globalFalse);
 	})
 }
 
@@ -74,26 +99,33 @@ function getCartDetail(callback){
 			for (var i in cartItem){
 				var id = cartItem[i]['dataValues']['id'];
 				cartItem[i]['dataValues']['count'] = listDistinct.get(id.toString());				
-			}
+			}			
 			calculateItems(cartItem, function(totalPrice){			
-				callback(totalPrice);							
+				var result = {item:cartItem,total:totalPrice};
+				callback(result);							
 			})				
 		})		
 	})	
 }
 
-//function getTotal
-function setCache(objects, data ,callback){	
-	if (objects == null)
-		objects = {item:[],discount:[]};		
-	if (data.type == 'discount')
-		objects[data.type] = data.value;	
-	else
-		objects[data.type].push(data.value);
-	caches.set(globalCache, objects, function(err, success){
+//function insertCache to Item
+function setCache(cacheObject ,callback){	
+	caches.set(globalCache, cacheObject, function(err, success){
 		if (!err && success)
-			callback(true);
+			callback(globalTrue);
 		else
-			callback(false);
+			callback(globalFalse);
 	});
+}
+
+function insertCache(cacheObject, data ,callback){
+	if (cacheObject == null)
+		cacheObject = {item:[],coupon:[]};		
+	if (data.type == 'coupon')
+		cacheObject[data.type] = data.id;	
+	else
+		cacheObject[data.type].push(data.id);
+	setCache(cacheObject,function(status){
+		callback(status);
+	})
 }
