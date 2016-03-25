@@ -5,12 +5,12 @@ var chance = new Chance();
 
 module.exports = {
   up: function (queryInterface, Sequelize) {  
-    var reference = [];
-    models.categorys.findAll({      
-    }).then(function (result) {     
-        for (var i in result){          
-          reference.push(result[i]['dataValues']['id']);
-        }        
+    // var reference = [];
+    // models.categorys.findAll({      
+    // }).then(function (result) {     
+    //     for (var i in result){          
+    //       reference.push(result[i]['dataValues']['id']);
+    //     }        
         function generateItems(){
           var item = {
             name : chance.word(),
@@ -28,7 +28,7 @@ module.exports = {
         return queryInterface.bulkInsert('items',
         items    
         );
-    });        
+    // });        
   },
 
   down: function (queryInterface, Sequelize) {
