@@ -145,7 +145,7 @@ function setCache(cacheObject ,callback){
 function checkInsert(data,callback){
 	data.checkBody('type' , false).isExist();
 	data.checkBody('id' , false).isExist();	
-	if (data.validationErrors()){
+	if (data.validationErrors()){		
 		callback(false);
 		return;		
 	}
