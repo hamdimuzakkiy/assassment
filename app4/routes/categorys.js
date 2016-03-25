@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 var expressValidator = require('express-validator');
-var globalTrue = 'success';
-var globalFalse = 'failed';
 
 
 // insert record
@@ -42,15 +40,15 @@ function checkInsert(data,callback){
 function insertCategory(data,callback){
 	checkInsert(data,function(status){
 		if (!status){
-			callback(globalFalse);
+			callback(false);
 			return;		
 		}
 		models.categorys.create({
   		name : data.body.name,  		
 	  	}).then(function(createdItem){  		
-	  		callback(globalTrue);
+	  		callback(true);
 	  	}).catch(function(err){
-	  		callback(globalFalse);
+	  		callback(false);
 	  	}) 
 	})	
 }

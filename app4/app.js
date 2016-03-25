@@ -12,7 +12,6 @@ var carts = require('./routes/carts');
 var categorys = require('./routes/categorys');
 var expressValidator = require('express-validator');
 
-
 var caches = new nodeCache();
 var app = express();
 

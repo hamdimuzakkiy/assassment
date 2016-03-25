@@ -5,11 +5,8 @@ var caches = new nodeCache();
 var router = require('express-promise-router')();
 var models = require('../models');
 var expressValidator = require('express-validator')
-var globalTrue = 'success';
-var globalFalse = 'failed';
 var globalCache = "salestockCache";
 var Sequelize = require('sequelize');
-
 
 // set cache
 router.post('/', function(req, res, next) {
@@ -37,7 +34,7 @@ module.exports = router;
 function deleteCart(data,callback){
 	getCache(function(cacheObject){
 		if (cacheObject == null){
-			callback(globalFalse);
+			callback(false);
 			return;
 		}
 		var index = null;
@@ -50,7 +47,7 @@ function deleteCart(data,callback){
 		if (index != null)		
 			cacheObject['item'].splice(index,1);
 		setCache(cacheObject,function(status){
-			callback(globalTrue);
+			callback(true);
 		})		
 	})
 }
@@ -60,7 +57,7 @@ function getCache(callback){
 		if (!err)
 			callback(cacheObject);
 		else
-			callback(globalFalse);
+			callback(false);
 	})
 }
 
@@ -136,9 +133,9 @@ function getCartDetail(callback){
 function setCache(cacheObject ,callback){	
 	caches.set(globalCache, cacheObject, function(err, success){
 		if (!err && success)
-			callback(globalTrue);
+			callback(true);
 		else
-			callback(globalFalse);
+			callback(false);
 	});
 }
 
@@ -155,7 +152,7 @@ function checkInsert(data,callback){
 function insertCache(cacheObject, data ,callback){
 	checkInsert(data,function(status){
 		if (!status){
-			callback(globalFalse);
+			callback(false);
 			return;
 		}
 		if (cacheObject == null)

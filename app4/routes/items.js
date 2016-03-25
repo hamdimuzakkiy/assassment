@@ -2,9 +2,10 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 var expressValidator = require('express-validator');
-var globalTrue = 'success';
-var globalFalse = 'failed';
 
+// global.globalStatus(function(status){
+// 	console.log(status);
+// })
 
 // insert record
 router.post('/', function(req, res, next) {	
@@ -55,9 +56,9 @@ function updateItem(data,callback){
 			id : data.body.id,
 		}
 	}).then(function(updated){
-		callback(globalTrue);
+		callback(true);
 	}).catch(function(err){
-		callback(globalFalse);
+		callback(false);
 	})
 }
 
@@ -75,7 +76,7 @@ function checkInsert(data,callback){
 function insertItem(data,callback){
 	checkInsert(data,function(status){
 		if (!status){
-			callback(globalFalse);
+			callback(false);
 			return;		
 		}
 		models.items.create({
@@ -83,9 +84,9 @@ function insertItem(data,callback){
   		price : data.body.price,
   		categoryId : data.body.categoryId,
 	  	}).then(function(createdItem){  		
-	  		callback(globalTrue);
+	  		callback(true);
 	  	}).catch(function(err){
-	  		callback(globalFalse);
+	  		callback(false);
 	  	}) 
 	})	
 }
@@ -99,8 +100,8 @@ function deleteItem(data,callback){
 		},
 	}
 	).then(function(updated){
-		callback(globalTrue);
+		callback(true);
 	}).catch(function(err){
-		callback(globalFalse);
+		callback(false);
 	})	
 }
