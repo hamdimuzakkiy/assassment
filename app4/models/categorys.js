@@ -7,7 +7,15 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         categorys.hasMany(models.items,{})
       }
-    }
+    }, instanceMethods: {
+        toJSON: function () {
+          var values = this.get();
+
+          delete values.createdAt;
+          delete values.updatedAt;          
+          return values;
+        }
+      }
   });
   return categorys;
 };

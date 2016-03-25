@@ -25,7 +25,16 @@ module.exports = function(sequelize, DataTypes) {
         items.belongsTo(models.categorys,{                  
         })
       }
-    },    
+    }, instanceMethods: {
+        toJSON: function () {
+          var values = this.get();
+
+          delete values.createdAt;
+          delete values.updatedAt;
+          delete values.deleted;
+          return values;
+        }
+      }    
   });
   return items;
 };

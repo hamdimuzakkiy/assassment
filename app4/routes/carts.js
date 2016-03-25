@@ -86,8 +86,12 @@ function calculateItems(cartDetail,callback){
 function getDiscount(code,callback){	
 	models.coupons.findAll({
 		where : Sequelize.and({isUsed : 0},{code:code}),		
-	}).then(function (result) {    	
-    	callback(result);
+	}).then(function (result) { 
+		if (result[0] == null)
+			result = 0;
+		else
+			result = result[0]['dataValues']['value']   	
+    	callback(result.toString());
 	});
 }
 
@@ -112,11 +116,7 @@ function getCartDetail(callback){
 				cartItem[i]['dataValues']['count'] = listDistinct.get(id.toString());				
 			}			
 			getDiscount(cacheObject['coupon'],function(discountValue){				
-				calculateItems(cartItem, function(totalPrice){																		
-						if (discountValue[0] == null)
-							discountValue = 0;
-						else
-							discountValue = discountValue[0]['dataValues']['value']
+				calculateItems(cartItem, function(totalPrice){																								
 						var totalPurchase = parseInt(totalPrice) - parseInt(discountValue);
 						if (totalPurchase<0)
 							totalPurchase = 0;
