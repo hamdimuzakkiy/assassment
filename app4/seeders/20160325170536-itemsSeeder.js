@@ -28,24 +28,7 @@ module.exports = {
         return queryInterface.bulkInsert('items',
         items    
         );
-    });    
-    // function generateItems(){
-    //   var item = {
-    //     name : chance.word(),
-    //     price: chance.integer({min: 100000, max: 100000000}),
-    //     categoryId: 1,
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),                            
-    //   };
-    //   return item;
-    // }
-    // var items = [];
-    // for (var i=0;i<10;i++){
-    //   items.push(generateItems());
-    // }     
-    // return queryInterface.bulkInsert('items',
-    // items    
-    // );
+    });        
   },
 
   down: function (queryInterface, Sequelize) {
