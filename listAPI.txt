@@ -1,0 +1,59 @@
+public access : 
+	http://128.199.204.141:3000/
+API :	
+	Insert Item
+		URL	 	: http://128.199.204.141:3000/items
+		METHOD 		: POST
+		PARAM 		: name (string) , price (integer) , categoryId (foreign key categrys, int)
+		RESPONSE	: True/False
+
+	Update Item
+		URL 		: http://128.199.204.141:3000/items
+		METHOD 		: PUT
+		PARAM 		: id (int) , name (string) , price (integer)
+		RESPONSE	: True/False
+
+	Get Item
+		URL 		: http://128.199.204.141:3000/items
+		METHOD 		: GET		
+		RESPONSE	: [{"id": value,"name":value,"price":value,"categoryId":value,"category":{"id":value,"name":value}}, ... {}]
+		
+	Delete Item
+		URL 		: http://128.199.204.141:3000/items
+		METHOD 		: DELTE
+		PARAM 		: id (int)
+		RESPONSE	: True/False
+
+	Insert Category
+		URL 		: http://128.199.204.141:3000/categorys
+		METHOD 		: POST
+		PARAM 		: name (string)
+		RESPONSE	: True/False
+		
+	Get Category
+		URL 		: http://128.199.204.141:3000/categorys
+		METHOD 		: POST		
+		RESPONSE	: True/False
+		RESPONSE	: [{"id":value,"name":value},...{}]		
+		
+	Insert Item to Cart
+		URL 		: http://128.199.204.141:3000/carts
+		METHOD 		: POST
+		PARAM 		: id/code (int) , type ('item','coupon')
+		RESPONSE	: True/False
+	
+	Remove Item from Cart
+		URL 		: http://128.199.204.141:3000/carts
+		METHOD 		: DELETE
+		PARAM 		: id (string) , type ('item','coupon') => id item / coupon code
+		RESPONSE	: True/False
+	
+	Get Cart Detail
+		URL 		: http://128.199.204.141:3000/carts
+		METHOD 		: GET		
+		RESPONSE	: [{"items": [{"id": value,"name":value,"price":value,"categoryId":value,"category":{"id":value,"name":value},"count":value}],"total": value,"discount":value,"totalPurchase":value}]
+	
+	Get Coupons
+		URL 		: http://128.199.204.141:3000/coupons
+		METHOD 		: GET		
+		RESPONSE 	: [{"id": value,"code":value,"value":value,"isUsed":value}, ... {}]

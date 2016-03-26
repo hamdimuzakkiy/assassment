@@ -3,10 +3,6 @@ var router = express.Router();
 var models = require('../models');
 var expressValidator = require('express-validator');
 
-// global.globalStatus(function(status){
-// 	console.log(status);
-// })
-
 // insert record
 router.post('/', function(req, res, next) {	
   	insertItem(req,function(flag){
