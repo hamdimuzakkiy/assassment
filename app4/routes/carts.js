@@ -158,9 +158,9 @@ function insertCache(cacheObject, data ,callback){
 		if (cacheObject == null)
 		cacheObject = {item:[],coupon:[]};		
 		if (data.body.type == 'coupon')
-			cacheObject[data.body.type] = data.body.id;	
-		else
-			cacheObject[data.body.type].push(data.body.id);
+			cacheObject['coupon'] = data.body.id;	
+		else 
+			cacheObject['item'].push(data.body.id);
 		setCache(cacheObject,function(status){
 			callback(status);
 		})
