@@ -10,7 +10,7 @@ var Sequelize = require('sequelize');
 
 // set cache
 router.post('/', function(req, res, next) {	
-	var cacheId = req.connection.remoteAddress.toString()+req.connection.remotePort.toString();
+	var cacheId = req.connection.remoteAddress.toString();
 	getCache(cacheId,function(cacheObject){		
 		insertCache(cacheId,cacheObject,req,function(status){
 			res.send(status);
@@ -19,14 +19,14 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next){	
-	var cacheId = req.connection.remoteAddress.toString()+req.connection.remotePort.toString();
+	var cacheId = req.connection.remoteAddress.toString();
 	getCartDetail(cacheId,function(cartDetail){
 		res.send(cartDetail);
 	})
 });
 
 router.delete('/', function(req, res, next){
-	var cacheId = req.connection.remoteAddress.toString()+req.connection.remotePort.toString();
+	var cacheId = req.connection.remoteAddress.toString();
 	deleteCart(cacheId,req.body,function(status){
 		res.send(status);
 	})
