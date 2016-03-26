@@ -5,34 +5,37 @@ var caches = new nodeCache();
 var router = require('express-promise-router')();
 var models = require('../models');
 var expressValidator = require('express-validator')
-var globalCache = "salestockCache";
+//var globalCache = "salestockCache";
 var Sequelize = require('sequelize');
 
 // set cache
-router.post('/', function(req, res, next) {
-	getCache(function(cacheObject){		
-		insertCache(cacheObject,req,function(status){
+router.post('/', function(req, res, next) {	
+	var cacheId = req.connection.remoteAddress.toString()+req.connection.remotePort.toString();
+	getCache(cacheId,function(cacheObject){		
+		insertCache(cacheId,cacheObject,req,function(status){
 			res.send(status);
 		})
 	});		
 });
 
-router.get('/', function(req, res, next){
-	getCartDetail(function(cartDetail){
+router.get('/', function(req, res, next){	
+	var cacheId = req.connection.remoteAddress.toString()+req.connection.remotePort.toString();
+	getCartDetail(cacheId,function(cartDetail){
 		res.send(cartDetail);
 	})
 });
 
 router.delete('/', function(req, res, next){
-	deleteCart(req.body,function(status){
+	var cacheId = req.connection.remoteAddress.toString()+req.connection.remotePort.toString();
+	deleteCart(cacheId,req.body,function(status){
 		res.send(status);
 	})
 });
 
 module.exports = router;
 
-function deleteCart(data,callback){
-	getCache(function(cacheObject){
+function deleteCart(cacheId,data,callback){
+	getCache(cacheId,function(cacheObject){
 		if (cacheObject == null){
 			callback(false);
 			return;
@@ -46,14 +49,14 @@ function deleteCart(data,callback){
 		}		
 		if (index != null)		
 			cacheObject['item'].splice(index,1);
-		setCache(cacheObject,function(status){
+		setCache(cacheId,cacheObject,function(status){
 			callback(true);
 		})		
 	})
 }
 
-function getCache(callback){
-	caches.get(globalCache, function(err, cacheObject){
+function getCache(cacheId,callback){
+	caches.get(cacheId, function(err, cacheObject){
 		if (!err)
 			callback(cacheObject);
 		else
@@ -93,8 +96,8 @@ function getDiscount(code,callback){
 }
 
 //function list of cart
-function getCartDetail(callback){
-	getCache(function(cacheObject){				
+function getCartDetail(cacheId,callback){
+	getCache(cacheId,function(cacheObject){				
 		if (cacheObject == null){			
 			callback({item:[],total:0,discount:0,totalPurchase:0});		
 			return;
@@ -130,8 +133,8 @@ function getCartDetail(callback){
 }
 
 //function insertCache to Item
-function setCache(cacheObject ,callback){	
-	caches.set(globalCache, cacheObject, function(err, success){
+function setCache(cacheId,cacheObject ,callback){	
+	caches.set(cacheId, cacheObject, function(err, success){
 		if (!err && success)
 			callback(true);
 		else
@@ -149,7 +152,7 @@ function checkInsert(data,callback){
 	callback(true);
 }
 
-function insertCache(cacheObject, data ,callback){
+function insertCache(cacheId,cacheObject, data ,callback){
 	checkInsert(data,function(status){
 		if (!status){
 			callback(false);
@@ -161,7 +164,7 @@ function insertCache(cacheObject, data ,callback){
 			cacheObject['coupon'] = data.body.id;	
 		else 
 			cacheObject['item'].push(data.body.id);
-		setCache(cacheObject,function(status){
+		setCache(cacheId,cacheObject,function(status){
 			callback(status);
 		})
 	})	
